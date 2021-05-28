@@ -1,7 +1,8 @@
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import styles from './VirtualKeyboard.module.scss'
 import classNamesBind from 'classnames/bind';
-import {keys} from './utils/constants';
+import { keys } from './utils/constants';
+import { shuffleAlphabet } from "./utils/util";
 
 const VirtualKeyboard = () => {
 
@@ -11,19 +12,9 @@ const VirtualKeyboard = () => {
     const [capsPressed, setCapsPressed] = useState(false);
     let result = useRef("");
 
-    const shuffleAlphabet = (arr, pressedKey) => {
+    const keyHandler = (arr, pressedKey) => {
         result.current += !shiftPressed ? pressedKey.defaultValue : pressedKey.shiftedValue;
-        let currentIndex = keysLayout.length, temporaryValue, randomIndex;
-
-        while (currentIndex !== 0) {
-
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            temporaryValue = arr[currentIndex];
-            arr[currentIndex] = arr[randomIndex];
-            arr[randomIndex] = temporaryValue;
-        }
+        shuffleAlphabet(arr)
         setKeysLayout([...arr]);
     }
 
@@ -61,7 +52,7 @@ const VirtualKeyboard = () => {
                     {
                         keysLayout.slice(34, 47).map((alpha, index) =>
                             <button
-                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                                onClick={(e) => keyHandler(keys, alpha)}
                             >{fetchKeyValue(alpha)}
                             </button>
                         )
@@ -73,7 +64,7 @@ const VirtualKeyboard = () => {
                     {
                         keysLayout.slice(0, 13).map((alpha, index) =>
                             <button
-                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                                onClick={(e) => keyHandler(keys, alpha)}
                             >{fetchKeyValue(alpha)}
                             </button>
                         )
@@ -87,7 +78,7 @@ const VirtualKeyboard = () => {
                     {
                         keysLayout.slice(13, 24).map((alpha, index) =>
                             <button
-                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                                onClick={(e) => keyHandler(keys, alpha)}
                             >{fetchKeyValue(alpha)}
                             </button>
                         )
@@ -101,7 +92,7 @@ const VirtualKeyboard = () => {
                     {
                         keysLayout.slice(24, 34).map((alpha, index) =>
                             <button
-                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                                onClick={(e) => keyHandler(keys, alpha)}
                             >{fetchKeyValue(alpha)}
                             </button>
                         )
