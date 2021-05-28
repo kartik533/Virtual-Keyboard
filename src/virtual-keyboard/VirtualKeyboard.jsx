@@ -1,34 +1,74 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import styles from './VirtualKeyboard.module.scss'
+import classNamesBind from 'classnames/bind';
 
 const VirtualKeyboard = () => {
 
-    let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    //let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
     let numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-    useEffect(() => {
-        console.log('in use effect')
-        document.querySelectorAll(".key").forEach(item => {
-            item.addEventListener("click", (e) => {
-                let element = e.target.closest('div')
-                if (isNaN(element.textContent)) {
-                    shuffleAlphabet(keys, element.textContent)
-                } else {
-                    shuffleNumbers(numbers, element.textContent)
-                }
-            }, false)
-        });
-        //eslint-disable-next-line
-    }, []);
+    let keys = [
+        {id: 'q', defaultValue: 'q', shiftedValue: 'Q'},
+        {id: 'w', defaultValue: 'w', shiftedValue: 'W'},
+        {id: 'e', defaultValue: 'e', shiftedValue: 'E'},
+        {id: 'r', defaultValue: 'r', shiftedValue: 'R'},
+        {id: 't', defaultValue: 't', shiftedValue: 'T'},
+        {id: 'y', defaultValue: 'y', shiftedValue: 'Y'},
+        {id: 'u', defaultValue: 'u', shiftedValue: 'U'},
+        {id: 'i', defaultValue: 'i', shiftedValue: 'I'},
+        {id: 'o', defaultValue: 'o', shiftedValue: 'O'},
+        {id: 'p', defaultValue: 'p', shiftedValue: 'P'},
+        {id: '[', defaultValue: '[', shiftedValue: '{'},
+        {id: ']', defaultValue: ']', shiftedValue: '}'},
+        {id: '\\', defaultValue: '\\', shiftedValue: '|'},
 
+        {id: 'a', defaultValue: 'a', shiftedValue: 'A'},
+        {id: 's', defaultValue: 's', shiftedValue: 'S'},
+        {id: 'd', defaultValue: 'd', shiftedValue: 'D'},
+        {id: 'f', defaultValue: 'f', shiftedValue: 'F'},
+        {id: 'g', defaultValue: 'g', shiftedValue: 'G'},
+        {id: 'h', defaultValue: 'h', shiftedValue: 'H'},
+        {id: 'j', defaultValue: 'j', shiftedValue: 'J'},
+        {id: 'k', defaultValue: 'k', shiftedValue: 'K'},
+        {id: 'l', defaultValue: 'l', shiftedValue: 'L'},
+        {id: ';', defaultValue: ';', shiftedValue: ':'},
+        {id: "'", defaultValue: "'", shiftedValue: '"'},
+
+        {id: 'z', defaultValue: 'z', shiftedValue: 'Z'},
+        {id: 'x', defaultValue: 'x', shiftedValue: 'X'},
+        {id: 'c', defaultValue: 'c', shiftedValue: 'C'},
+        {id: 'v', defaultValue: 'v', shiftedValue: 'V'},
+        {id: 'b', defaultValue: 'b', shiftedValue: 'B'},
+        {id: 'n', defaultValue: 'n', shiftedValue: 'N'},
+        {id: 'm', defaultValue: 'm', shiftedValue: 'M'},
+        {id: ',', defaultValue: ',', shiftedValue: '<'},
+        {id: '.', defaultValue: '.', shiftedValue: '>'},
+        {id: '/', defaultValue: '/', shiftedValue: '?'},
+
+        { id: '~', defaultValue: '`', shiftedValue: '~' },
+        { id: '1', defaultValue: '1', shiftedValue: '!' },
+        { id: '2', defaultValue: '2', shiftedValue: '@' },
+        { id: '3', defaultValue: '3', shiftedValue: '#' },
+        { id: '4', defaultValue: '4', shiftedValue: '$' },
+        { id: '5', defaultValue: '5', shiftedValue: '%' },
+        { id: '6', defaultValue: '6', shiftedValue: '^' },
+        { id: '7', defaultValue: '7', shiftedValue: '&' },
+        { id: '8', defaultValue: '8', shiftedValue: '*' },
+        { id: '9', defaultValue: '9', shiftedValue: '(' },
+        { id: '0', defaultValue: '0', shiftedValue: ')' },
+        { id: '-', defaultValue: '-', shiftedValue: '_' },
+        { id: '=', defaultValue: '=', shiftedValue: '+' },
+    ]
 
     const [keysLayout, setKeysLayout] = useState(keys)
     const [numbersLayout, setNumbersLayout] = useState(numbers)
     const [deletePressed, setDeletePressed] = useState(false);
+    const [shiftPressed, setShiftPressed] = useState(false);
+    const [capsPressed, setCapsPressed] = useState(false);
     let result = useRef("");
 
     const shuffleAlphabet = (arr, pressedKey) => {
-        result.current += pressedKey;
+        result.current += !shiftPressed ? pressedKey.defaultValue : pressedKey.shiftedValue;
         let currentIndex = keysLayout.length, temporaryValue, randomIndex;
 
         while (currentIndex !== 0) {
@@ -41,10 +81,11 @@ const VirtualKeyboard = () => {
             arr[randomIndex] = temporaryValue;
         }
         setKeysLayout([...arr]);
+        //setDeletePressed(!deletePressed)
     }
 
     const shuffleNumbers = (nums, pressedKey) => {
-        result.current += pressedKey;
+        result.current += !shiftPressed ? pressedKey.defaultValue : pressedKey.shiftedValue();
         let currentIndex = numbersLayout.length, temporaryValue, randomIndex;
 
         while (currentIndex !== 0) {
@@ -57,7 +98,7 @@ const VirtualKeyboard = () => {
             nums[randomIndex] = temporaryValue;
         }
         setNumbersLayout([...nums]);
-        console.log(numbersLayout)
+        //setDeletePressed(!deletePressed)
     }
 
     const deleteHandler = () => {
@@ -66,86 +107,71 @@ const VirtualKeyboard = () => {
     }
 
     const tabHandler = () => result.current += '     ';
+    const capsHandler = () => setCapsPressed(!capsPressed);
+    const returnHandler= () => result.current += '\n'
+    const shiftHandler = () => setShiftPressed(!shiftPressed);
     const spaceHandler = () => result.current += ' ';
 
-    const shiftHandler = () => null;
 
     return (
         <main>
+            <textarea placeholder="Text will appear here..." value={result.current}/>
             <div className={styles['virtual-keyboard']}>
                 <section>
-                    <div className="key">~</div>
-                    <div className="key">{numbersLayout[0]}</div>
-                    <div className="key">{numbersLayout[1]}</div>
-                    <div className="key">{numbersLayout[2]}</div>
-                    <div className="key">{numbersLayout[3]}</div>
-                    <div className="key">{numbersLayout[4]}</div>
-                    <div className="key">{numbersLayout[5]}</div>
-                    <div className="key">{numbersLayout[6]}</div>
-                    <div className="key">{numbersLayout[7]}</div>
-                    <div className="key">{numbersLayout[8]}</div>
-                    <div className="key">{numbersLayout[9]}</div>
-                    <div className="key">-</div>
-                    <div className="key">+</div>
-                    <div className={styles.delete} onClick={deleteHandler}>Delete</div>
+                    {
+                        keysLayout.slice(34, 47).map((alpha, index) =>
+                            <button
+                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                            >{!shiftPressed ? alpha.defaultValue : alpha.shiftedValue}
+                            </button>
+                        )
+                    }
+                    <button className={styles.delete} onClick={deleteHandler}>Delete</button>
                 </section>
                 <section>
-                    <div className={styles.tab} onClick={tabHandler}>Tab</div>
-                    <div className="key">{keysLayout[16]}</div>
-                    <div className="key">{keysLayout[22]}</div>
-                    <div className="key">{keysLayout[4]}</div>
-                    <div className="key">{keysLayout[17]}</div>
-                    <div className="key">{keysLayout[19]}</div>
-                    <div className="key">{keysLayout[24]}</div>
-                    <div className="key">{keysLayout[20]}</div>
-                    <div className="key">{keysLayout[8]}</div>
-                    <div className="key">{keysLayout[14]}</div>
-                    <div className="key">{keysLayout[15]}</div>
-                    <div className="key">[</div>
-                    <div className="key">]</div>
-                    <div className={styles.backlash}>\</div>
+                    <button className={styles.tab} onClick={tabHandler}>Tab</button>
+                    {
+                        keysLayout.slice(0, 13).map((alpha, index) =>
+                            <button
+                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                            >{(!shiftPressed && !capsPressed) ? alpha.defaultValue : alpha.shiftedValue}
+                            </button>
+                        )
+                    }
                 </section>
                 <section>
-                    <div className={styles.capslock}>CapsLock</div>
-                    <div className="key">{keysLayout[0]}</div>
-                    <div className="key">{keysLayout[18]}</div>
-                    <div className="key">{keysLayout[3]}</div>
-                    <div className="key">{keysLayout[5]}</div>
-                    <div className="key">{keysLayout[6]}</div>
-                    <div className="key">{keysLayout[7]}</div>
-                    <div className="key">{keysLayout[9]}</div>
-                    <div className="key">{keysLayout[10]}</div>
-                    <div className="key">{keysLayout[11]}</div>
-                    <div className="key">;</div>
-                    <div className="key">'</div>
-                    <div className={styles.return}>Return</div>
+                    <button className={classNamesBind( [styles['caps-lock']], {[styles['caps-lock-active']]: capsPressed })} onClick={capsHandler}>Caps</button>
+                    {
+                        keysLayout.slice(13, 24).map((alpha, index) =>
+                            <button
+                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                            >{(!shiftPressed && !capsPressed) ? alpha.defaultValue : alpha.shiftedValue}
+                            </button>
+                        )
+                    }
+                    <button className={styles.return} onClick={returnHandler}>Return</button>
                 </section>
                 <section>
-                    <div className={styles['left-shift']} onClick={shiftHandler}>Shift</div>
-                    <div className="key">{keysLayout[25]}</div>
-                    <div className="key">{keysLayout[23]}</div>
-                    <div className="key">{keysLayout[2]}</div>
-                    <div className="key">{keysLayout[21]}</div>
-                    <div className="key">{keysLayout[1]}</div>
-                    <div className="key">{keysLayout[13]}</div>
-                    <div className="key">{keysLayout[12]}</div>
-                    <div className="key">,</div>
-                    <div className="key">.</div>
-                    <div className="key">/</div>
-                    <div className={styles['right-shift']} onClick={shiftHandler}>Shift</div>
+                    <button className={classNamesBind([styles['shift']], {[styles['shift-active']]: shiftPressed })} onClick={shiftHandler}>Shift</button>
+                    {
+                        keysLayout.slice(24, 34).map((alpha, index) =>
+                            <button
+                                onClick={(e) => shuffleAlphabet(keys, alpha)}
+                            >{(!shiftPressed && !capsPressed) ? alpha.defaultValue : alpha.shiftedValue}
+                            </button>
+                        )
+                    }
+                    <button className={classNamesBind([styles['shift']], {[styles['shift-active']]: shiftPressed })} onClick={shiftHandler}>Shift</button>
                 </section>
                 <section>
-                    <div className={styles['left-ctrl']}>Ctrl</div>
-                    <div className="key">Alt</div>
-                    <div className={styles.command}>Command</div>
-                    <div className={styles.space} onClick={spaceHandler}>Space</div>
-                    <div className={styles.command}>command</div>
-                    <div className="key">Alt</div>
-                    <div className="key">Ctrl</div>
-                    <div className="key">Fn</div>
+                    <button >Ctrl</button>
+                    <button >Alt</button>
+                    <button >Command</button>
+                    <button className={styles.space} onClick={spaceHandler}>Space</button>
+                    <button >command</button>
+                    <button >Alt</button>
+                    <button >Ctrl</button>
                 </section>
-
-                <textarea placeholder="Text will appear here..." value={result.current}></textarea>
             </div>
         </main>
     )
