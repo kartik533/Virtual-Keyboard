@@ -16,6 +16,7 @@ const VirtualKeyboard = () => {
         result.current += fetchKeyValue(pressedKey)
         shuffleAlphabet(arr)
         setKeysLayout([...arr]);
+        if (shiftPressed) setShiftPressed(!shiftPressed);
     }
 
     const deleteHandler = () => {
