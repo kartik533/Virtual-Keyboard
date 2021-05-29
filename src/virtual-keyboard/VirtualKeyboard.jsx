@@ -22,18 +22,13 @@ const VirtualKeyboard = () => {
         shuffleAlphabet(arr)
         setKeysLayout([...arr]);
         if (shiftPressed) setShiftPressed(!shiftPressed);
-
-
     }
 
     const returnHandler = () =>{
         result.current += '\n';
         setDummy(!dummy);
-        if (textArea) textArea.scrollTop = textArea.scrollHeight-20;
-        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
+        if (textArea) textArea.scrollTop = textArea.scrollHeight;
         textArea && textArea.focus();
-        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
-
     }
 
     const deleteHandler = () => {

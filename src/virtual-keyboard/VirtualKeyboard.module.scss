@@ -17,6 +17,10 @@ main {
     color: hsla(0, 0%, 100%, 0.9)
   }
 
+  textarea:focus {
+    outline: none;
+  }
+
   .virtual-keyboard {
     display: flex;
     flex-direction: column;
