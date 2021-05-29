@@ -10,29 +10,29 @@ const VirtualKeyboard = () => {
     const [deletePressed, setDeletePressed] = useState(false);
     const [shiftPressed, setShiftPressed] = useState(false);
     const [capsPressed, setCapsPressed] = useState(false);
+    const [dummy, setDummy] = useState(false);
     let result = useRef("");
 
     let textArea = document.getElementById("textarea");
 
     const keyHandler = (arr, pressedKey) => {
-        if (textArea) textArea.scrollTop = textArea.scrollHeight;
-        //textArea && textArea.focus();
+        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
+        textArea && textArea.focus();
         result.current += fetchKeyValue(pressedKey)
         shuffleAlphabet(arr)
         setKeysLayout([...arr]);
         if (shiftPressed) setShiftPressed(!shiftPressed);
-        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
-        //textArea && textArea.focus();
 
 
     }
 
     const returnHandler = () =>{
-        setDeletePressed(!deletePressed);
-        if (textArea) textArea.scrollTop = textArea.scrollHeight;
-        //textArea && textArea.focus();
-        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
         result.current += '\n';
+        setDummy(!dummy);
+        if (textArea) textArea.scrollTop = textArea.scrollHeight-20;
+        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
+        textArea && textArea.focus();
+        //if (textArea) textArea.scrollTop = textArea.scrollHeight;
 
     }
 
