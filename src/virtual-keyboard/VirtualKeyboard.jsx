@@ -13,7 +13,7 @@ const VirtualKeyboard = () => {
     let result = useRef("");
 
     const keyHandler = (arr, pressedKey) => {
-        result.current += !shiftPressed ? pressedKey.defaultValue : pressedKey.shiftedValue;
+        result.current += fetchKeyValue(pressedKey)
         shuffleAlphabet(arr)
         setKeysLayout([...arr]);
     }
